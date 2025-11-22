@@ -236,28 +236,48 @@ def get_and_transfer_api_data_to_s3(**context):
     logging.info(f"💻 Start load for dates: {start_date}/{end_date}")
     con = duckdb.connect()
 
+    #con.sql(
+        #f"""
+        #SET TIMEZONE='UTC';
+        #INSTALL httpfs;
+        #LOAD httpfs;
+        #SET s3_url_style = 'path';
+        #SET s3_endpoint = 'minio:9000';
+        #SET s3_access_key_id = '{ACCESS_KEY}'; 
+        #SET s3_secret_access_key = '{SECRET_KEY}';
+        #SET s3_use_ssl = FALSE;
+
+        #COPY
+        #(
+            #SELECT
+                #*
+            #FROM
+                #read_csv_auto('https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime={start_date}&endtime={end_date}') AS res
+        #) TO 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet';
+
+       #""",
+    #)
     con.sql(
-        f"""
-        SET TIMEZONE='UTC';
-        INSTALL httpfs;
-        LOAD httpfs;
-        SET s3_url_style = 'path';
-        SET s3_endpoint = 'minio:9000';
-        SET s3_access_key_id = '{ACCESS_KEY}'; 
-        SET s3_secret_access_key = '{SECRET_KEY}';
-        SET s3_use_ssl = FALSE;
+    f"""
+    SET TIMEZONE='UTC';
+    INSTALL httpfs;
+    LOAD httpfs;
 
-        COPY
-        (
-            SELECT
-                *
-            FROM
-                read_csv_auto('https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime={start_date}&endtime={end_date}') AS res
-        ) TO 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet';
+    SET s3_url_style='path';
+    SET s3_endpoint='minio:9000';
+    SET s3_access_key_id='{ACCESS_KEY}';
+    SET s3_secret_access_key='{SECRET_KEY}';
+    SET s3_use_ssl=FALSE;
 
-        """,
-    )
-
+    COPY (
+        SELECT *
+        FROM read_csv_auto(
+            'https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime={start_date}&endtime={end_date}'
+        )
+    ) TO 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet'
+    (FORMAT PARQUET, COMPRESSION 'GZIP');
+    """
+)
     con.close()
     logging.info(f"✅ Download for date success: {start_date}")
 
