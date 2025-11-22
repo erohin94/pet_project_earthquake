@@ -18,3 +18,46 @@
 
 <img width="621" height="154" alt="image" src="https://github.com/user-attachments/assets/c99a0e74-63de-4994-ba95-3ffe80795ded" />
 
+**Проверяю работоспособность локального и удаленного репозитория.**
+
+Проверяю версию git `git --version`
+
+<img width="386" height="32" alt="image" src="https://github.com/user-attachments/assets/00827df4-81f2-43e4-bbb3-927eba29df32" />
+
+Задаю имя пользлвателя и почту, далее делаю проверку
+
+```
+git config --global user.name "Ваше имя"
+git config --global user.email "email@domain.com"
+
+git config user.email
+git config user.name
+```
+
+<img width="686" height="147" alt="image" src="https://github.com/user-attachments/assets/4d228749-c507-49b3-8577-66253c14aadd" />
+
+Создаю локально тестовый файл `test_file.txt`
+
+<img width="622" height="194" alt="image" src="https://github.com/user-attachments/assets/18dfb0b7-1585-4962-a24c-7dc0822c5f35" />
+
+Пробую его отправить в удаленный репозиторий, но перед отправкой, если в удаленном репозитории были какие либо изменения, их надо сначала добавить в локальный.
+
+Сначала подтягиваем изменения с удалённого репозитория: `git pull origin main`
+
+<img width="700" height="213" alt="image" src="https://github.com/user-attachments/assets/ffc16e18-8199-4317-85a8-18617b338261" />
+
+Добавить файлы: `git add .`
+
+Сделать коммит: `git commit -m "Тестовый коммит"`
+
+<img width="737" height="101" alt="image" src="https://github.com/user-attachments/assets/c3c46477-aa5b-43da-9974-e1c46a848d0d" />
+
+Затем пушим: `git push origin main`
+
+<img width="617" height="165" alt="image" src="https://github.com/user-attachments/assets/a6e44861-6c3b-40de-b3b0-f2eafbeda88b" />
+
+Как видим, файл добавлен в удаленный репозиторий.
+
+<img width="1309" height="396" alt="image" src="https://github.com/user-attachments/assets/6776b1a3-feeb-4a0c-9d96-140827d946a6" />
+
+
