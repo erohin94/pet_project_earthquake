@@ -76,3 +76,6 @@ git config user.name
 
 ## Разворачивание инфраструктуры
 
+В services в .yaml файле были добавлены сервисы postgres_dwh, minio, metabase
+
+Выполняю команду: `docker-compose up -d`
