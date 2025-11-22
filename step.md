@@ -78,6 +78,13 @@ git config user.name
 
 В services в .yaml файле были добавлены сервисы postgres_dwh, minio, metabase
 
+Так же в переменную `_PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-duckdb}` был добавлен `duckdb`. Понадобится далее. Без него будет ошибка в UI Airflow.
+
+<img width="803" height="260" alt="image" src="https://github.com/user-attachments/assets/b452b61d-e789-4a37-b8e1-3cc94eeb8525" />
+
+Возникает из за того что, у меня Airflow изолирован, соответственно он не знает о моем виртуальном окружении venv, и то что я устанваливаю в виртуальное окружение venv, например установил в venv модуль duckdb (далее будет описано про установку).
+Airflow в докре не знает об этом, поэтому нам необходимо прописать в `_PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-duckdb}` все зависимости, которые должны быть установлены внутри контейнера. Это гарантирует, что DAG и задачи смогут использовать установленные пакеты без ошибок импорта.  
+
 Выполняю команду: `docker-compose up -d`
 
 Проверяю: `docker ps`
@@ -159,8 +166,144 @@ Airflow сейчас работает в докере, у докера есть 
 
 Это говорит о том что данное виртуальное окружение не знает что такое Airflow и что такое DAG. 
 
-Для этого устанавливаем: `pip install apache-airflow==2.10.5`
+Для этого устанавливаем: `pip install apache-airflow==2.10.5` в наше виртуальное окружение.
 
-Теперь если выделить DAG в импорте и нажать CTRL то будет видна документация.
+Теперь после установки, если выделить DAG в импорте и нажать CTRL то будет видна документация.
 
 <img width="825" height="322" alt="image" src="https://github.com/user-attachments/assets/86218e23-0c7a-44b0-ac27-3e1b409e2674" />
+
+Так же можно и провалится в airflow.
+
+*(Изначально при наведении на DAG, не удавалось видеть документацию, так как в VS Code не был выбран интерпретатор Python для проекта.
+Из-за этого Pylance и Intellisense показывали Any, потому что они не видели установленные пакеты в виртуальном окружении.
+После выбора правильного интерпретатора Python (в моём случае venv проекта) автодополнение и docstring для DAG начали работать корректно.)*
+
+Так же устанавливаю duckdb [ссылка](https://pypi.org/project/duckdb/1.2.2/)
+
+Ставлю версию: `pip install duckdb==1.2.2`
+
+Пишу код в `raw_from_api_to_s3.py`
+
+```
+import logging
+
+import duckdb
+import pendulum # Для работы с датами
+from airflow import DAG
+from airflow.models import Variable
+from airflow.operators.empty import EmptyOperator
+from airflow.operators.python import PythonOperator
+
+# Конфигурация DAG
+OWNER = "e.erokhin"
+DAG_ID = "raw_from_api_to_s3"
+
+# Используемые таблицы в DAG
+LAYER = "raw"
+SOURCE = "earthquake"
+
+# S3
+ACCESS_KEY = Variable.get("access_key")
+SECRET_KEY = Variable.get("secret_key")
+
+LONG_DESCRIPTION = """
+# LONG DESCRIPTION
+"""
+
+SHORT_DESCRIPTION = "SHORT DESCRIPTION"
+
+args = {
+    "owner": OWNER,
+    "start_date": pendulum.datetime(2025, 11, 12, tz="Europe/Moscow"),
+    "catchup": True,
+    "retries": 3,
+    "retry_delay": pendulum.duration(hours=1),
+}
+
+
+def get_dates(**context) -> tuple[str, str]:
+    """"""
+    start_date = context["data_interval_start"].format("YYYY-MM-DD")
+    end_date = context["data_interval_end"].format("YYYY-MM-DD")
+
+    return start_date, end_date
+
+
+def get_and_transfer_api_data_to_s3(**context):
+    """"""
+
+    start_date, end_date = get_dates(**context)
+    logging.info(f"💻 Start load for dates: {start_date}/{end_date}")
+    con = duckdb.connect()
+
+    con.sql(
+        f"""
+        SET TIMEZONE='UTC';
+        INSTALL httpfs;
+        LOAD httpfs;
+        SET s3_url_style = 'path';
+        SET s3_endpoint = 'minio:9000';
+        SET s3_access_key_id = '{ACCESS_KEY}'; 
+        SET s3_secret_access_key = '{SECRET_KEY}';
+        SET s3_use_ssl = FALSE;
+
+        COPY
+        (
+            SELECT
+                *
+            FROM
+                read_csv_auto('https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime={start_date}&endtime={end_date}') AS res
+        ) TO 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet';
+
+        """,
+    )
+
+    con.close()
+    logging.info(f"✅ Download for date success: {start_date}")
+
+
+with DAG(
+    dag_id=DAG_ID,
+    schedule_interval="0 5 * * *",
+    default_args=args,
+    tags=["s3", "raw"],
+    description=SHORT_DESCRIPTION,
+    concurrency=1,
+    max_active_tasks=1,
+    max_active_runs=1,
+) as dag:
+    dag.doc_md = LONG_DESCRIPTION
+
+    start = EmptyOperator(
+        task_id="start",
+    )
+
+    get_and_transfer_api_data_to_s3 = PythonOperator(
+        task_id="get_and_transfer_api_data_to_s3",
+        python_callable=get_and_transfer_api_data_to_s3,
+    )
+
+    end = EmptyOperator(
+        task_id="end",
+    )
+
+    start >> get_and_transfer_api_data_to_s3 >> end
+```
+
+После чего обновляю UI Airflow и вижу ошибку:
+
+<img width="814" height="295" alt="image" src="https://github.com/user-attachments/assets/365e0846-1f98-42cc-ab2e-1172198bad64" />
+
+Ругается на то, что ключей не существует. Для этого перехожу в Admin->Variables и создаю новый атрибут:
+
+<img width="780" height="444" alt="image" src="https://github.com/user-attachments/assets/0015274f-3e05-4e0b-8bc4-74d5ed3b2d6e" />
+
+<img width="853" height="463" alt="image" src="https://github.com/user-attachments/assets/2653454e-64e8-4765-8fea-fd9a7b4a6a5f" />
+
+<img width="1391" height="527" alt="image" src="https://github.com/user-attachments/assets/e30782a9-05b6-41c7-99eb-7eb10b2a44bc" />
+
+Обновляю и вижу что появился даг и пропала ошибка
+
+<img width="1889" height="402" alt="image" src="https://github.com/user-attachments/assets/35d482a3-1085-4609-aa85-1389a612fbf2" />
+
+44:00
