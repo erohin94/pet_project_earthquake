@@ -105,3 +105,21 @@ git config user.name
 Войти в UI интерфейс с учетными данными пользователя. Вводим в оба окошка minioadmin
 
 <img width="1890" height="336" alt="image" src="https://github.com/user-attachments/assets/f542816e-7023-45d4-8104-f4564298369d" />
+
+Создаем бакет
+
+<img width="1893" height="660" alt="image" src="https://github.com/user-attachments/assets/4dc88c72-208b-4994-97d3-6531fe937c48" />
+
+Сохраняем ключи которые будем использовать для подключения к бакету.
+
+<img width="1893" height="792" alt="image" src="https://github.com/user-attachments/assets/f0d49609-bf00-4a04-8e3c-97491255fa52" />
+
+<img width="1156" height="646" alt="image" src="https://github.com/user-attachments/assets/b0dc8851-2884-4f23-87bb-1c27b6c9111a" />
+
+Создаю файлик cred.py в котором будут ключи. В гит хранить его не будем.
+
+<img width="938" height="389" alt="image" src="https://github.com/user-attachments/assets/20401d17-14f0-4e5c-bd94-602122ade746" />
+
+## Запуск Metabase
+
+Metabase: http://localhost:3000
