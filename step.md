@@ -138,3 +138,9 @@ cred.py
 ## Запуск Metabase
 
 Metabase: http://localhost:3000
+
+## Создание первого DAG
+
+Первый даг будет грузить сырые данные из API и складывать в S3 `raw_from_api_to_s3.py`
+
+26:00
