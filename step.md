@@ -60,4 +60,13 @@ git config user.name
 
 <img width="1309" height="396" alt="image" src="https://github.com/user-attachments/assets/6776b1a3-feeb-4a0c-9d96-140827d946a6" />
 
+Открываю VS Code и создаю виртуальное окружение: `python -m venv venv`
+
+Активирую виртуальное окружение: `venv\Scripts\activate`
+
+<img width="851" height="181" alt="image" src="https://github.com/user-attachments/assets/96c9049f-54cf-45c4-9f53-ef8511eac1e9" />
+
+Как видно, на текущий момент абсолютно пустое виртуальное окружение
+
+<img width="578" height="88" alt="image" src="https://github.com/user-attachments/assets/e66c1507-8288-405d-a62d-294075f94a8c" />
 
