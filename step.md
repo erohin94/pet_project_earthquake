@@ -120,6 +120,8 @@ git config user.name
 
 <img width="938" height="389" alt="image" src="https://github.com/user-attachments/assets/20401d17-14f0-4e5c-bd94-602122ade746" />
 
+В рамках S3 access ключ можно показывать и он никак не работает без секретного ключа.
+
 ## Запуск Metabase
 
 Metabase: http://localhost:3000
