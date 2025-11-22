@@ -79,3 +79,13 @@ git config user.name
 В services в .yaml файле были добавлены сервисы postgres_dwh, minio, metabase
 
 Выполняю команду: `docker-compose up -d`
+
+Проверяю: `docker ps`
+
+Как видно сервисы стартанули
+
+<img width="1862" height="208" alt="image" src="https://github.com/user-attachments/assets/2bd9ee89-f7f5-4178-872d-d980e7153c9e" />
+
+В локальной директории были созданы автоматически папки: dags, logs и тд
+
+<img width="623" height="359" alt="image" src="https://github.com/user-attachments/assets/8a61e056-80d2-4ae2-af6e-af4597c5c76d" />
