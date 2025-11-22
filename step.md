@@ -1,4 +1,4 @@
-<img width="584" height="99" alt="image" src="https://github.com/user-attachments/assets/bf5bb5ed-f1dc-4fbb-9054-0f85339eaece" />## Начальные настройки - создание проекта
+## Начальные настройки - создание проекта
 
 Создаем папку с проектом на гитхабе. 
 
