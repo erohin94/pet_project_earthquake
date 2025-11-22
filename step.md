@@ -4,11 +4,11 @@
 
 <img width="882" height="789" alt="image" src="https://github.com/user-attachments/assets/a90678fa-88cc-4105-ae90-f6417be3525a" />
 
-Создаю локальную папку на своем компьютере, например `C:\Users\erohi\Desktop\de_project` .
+Создаю локальную папку на своем компьютере, например `C:\Users\erohi\Desktop\de_project`
 
-Открываю терминал и перехожу в папку `cd C:\Users\erohi\Desktop\de_project` .
+Открываю терминал и перехожу в папку `cd C:\Users\erohi\Desktop\de_project`
 
-Клонирую репозиторий `git clone git@github.com:erohin94/pet_project_earthquake.git` .
+Клонирую репозиторий `git clone git@github.com:erohin94/pet_project_earthquake.git`
 
 <img width="1237" height="546" alt="image" src="https://github.com/user-attachments/assets/500dd782-ab81-4b35-9b6b-e4dc7cf02b85" />
 
