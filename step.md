@@ -89,3 +89,19 @@ git config user.name
 В локальной директории были созданы автоматически папки: dags, logs и тд
 
 <img width="623" height="359" alt="image" src="https://github.com/user-attachments/assets/8a61e056-80d2-4ae2-af6e-af4597c5c76d" />
+
+## Запуск Airflow
+
+Чтобы увидеть интерфейс Airflow, открыть браузер и перейти по адресу http://127.0.0.1:8080/
+
+Если все прошло по плану, то появится окно для ввода имени пользователя и пароля. Вводим в оба окошка airflow и подтверждаем.
+
+<img width="1898" height="372" alt="image" src="https://github.com/user-attachments/assets/8d3ef726-4098-4459-b222-6ad2679aac5d" />
+
+## Запуск Minio
+
+Чтобы увидеть интерфейс Minio, открыть браузер и перейти по адресу http://127.0.0.1:9001
+
+Войти в UI интерфейс с учетными данными пользователя. Вводим в оба окошка minioadmin
+
+<img width="1890" height="336" alt="image" src="https://github.com/user-attachments/assets/f542816e-7023-45d4-8104-f4564298369d" />
