@@ -1,4 +1,4 @@
-## Начальные настройки - создание проекта
+<img width="584" height="99" alt="image" src="https://github.com/user-attachments/assets/bf5bb5ed-f1dc-4fbb-9054-0f85339eaece" />## Начальные настройки - создание проекта
 
 Создаем папку с проектом на гитхабе. 
 
@@ -143,4 +143,24 @@ Metabase: http://localhost:3000
 
 Первый даг будет грузить сырые данные из API и складывать в S3 `raw_from_api_to_s3.py`
 
-26:00
+Airflow сейчас работает в докере, у докера есть свое виртуальное окружение которое изолировано от моего локального компьютера.
+
+В моем виртуальном окружении venv сейчас установлен только pip.
+
+Чтобы сравнять виртуальное окружение между Airflow и моей локальной машиной, необходимо скачать пакет в мое виртуальное окружение которое запущено в VsCode.
+
+Прописываю в поисковике pipy apache airflow и скачиваю версию 2.10.5 [ссылка](https://pypi.org/project/apache-airflow/#history)
+
+<img width="584" height="99" alt="image" src="https://github.com/user-attachments/assets/608ba9d6-5004-45ba-a5ff-38dc7c257d17" />
+
+Если сечас в .py файле прописать `from airflow import DAG`, то увидим подчеркивание
+
+<img width="203" height="26" alt="image" src="https://github.com/user-attachments/assets/d03e4540-5d18-48d3-9900-417c6832d1c2" />
+
+Это говорит о том что данное виртуальное окружение не знает что такое Airflow и что такое DAG. 
+
+Для этого устанавливаем: `pip install apache-airflow==2.10.5`
+
+Теперь если выделить DAG в импорте и нажать CTRL то будет видна документация.
+
+<img width="825" height="322" alt="image" src="https://github.com/user-attachments/assets/86218e23-0c7a-44b0-ac27-3e1b409e2674" />
