@@ -1,3 +1,5 @@
+## Начальные настройки - создание проекта
+
 Создаем папку с проектом на гитхабе. 
 
 Добавил питоновский gitignore и MIT лицензию.
@@ -18,7 +20,7 @@
 
 <img width="621" height="154" alt="image" src="https://github.com/user-attachments/assets/c99a0e74-63de-4994-ba95-3ffe80795ded" />
 
-**Проверяю работоспособность локального и удаленного репозитория.**
+## Проверяю работоспособность локального и удаленного репозитория.
 
 Проверяю версию git `git --version`
 
@@ -60,6 +62,8 @@ git config user.name
 
 <img width="1309" height="396" alt="image" src="https://github.com/user-attachments/assets/6776b1a3-feeb-4a0c-9d96-140827d946a6" />
 
+## Создание виртуального окружения
+
 Открываю VS Code и создаю виртуальное окружение: `python -m venv venv`
 
 Активирую виртуальное окружение: `venv\Scripts\activate`
@@ -70,3 +74,8 @@ git config user.name
 
 <img width="578" height="88" alt="image" src="https://github.com/user-attachments/assets/e66c1507-8288-405d-a62d-294075f94a8c" />
 
+## Разворачивание инфраструктуры
+
+В services в .yaml файле были добавлены сервисы postgres_dwh, minio, metabase
+
+Выполняю команду: `docker-compose up -d`

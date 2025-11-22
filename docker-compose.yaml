@@ -112,7 +112,7 @@ services:
     build:
       context: .
       dockerfile: ./metabase/Dockerfile
-    container_name: metabase
+    container_name: metabase_new
     ports:
       - "3000:3000"
 
