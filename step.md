@@ -364,4 +364,28 @@ with DAG(
 
 <img width="1889" height="402" alt="image" src="https://github.com/user-attachments/assets/35d482a3-1085-4609-aa85-1389a612fbf2" />
 
-44:00
+Если кликнем на таску то увидим логи и то что загрузка завершена
+
+<img width="1892" height="442" alt="image" src="https://github.com/user-attachments/assets/ba8b0e08-a67a-4036-a4a6-51fb3f1a0e7a" />
+
+Так же увидим в MINIO
+
+<img width="1895" height="749" alt="image" src="https://github.com/user-attachments/assets/da8a18da-41c5-452e-b212-2e0ea378b80b" />
+
+<img width="1625" height="236" alt="image" src="https://github.com/user-attachments/assets/6d887122-9d50-4dec-aa94-e68afe3e74cf" />
+
+Загрузка инкриментально за вчера. И все происходит идемпотентно.
+
+То есть если очистим таск
+
+<img width="1886" height="465" alt="image" src="https://github.com/user-attachments/assets/0e841650-e301-4ee8-aa21-1d952f7b92a3" />
+
+То он перетрет данные и опять загрузит тоже самое что и было за эту дату.
+
+И если посмотреть на данные за 12-11-2025 то они будут свежее чем за 22-11-2025
+
+<img width="1618" height="225" alt="image" src="https://github.com/user-attachments/assets/07e95b4b-f9e3-43ae-9d71-807165d5bfae" />
+
+<img width="1617" height="227" alt="image" src="https://github.com/user-attachments/assets/4788615e-64fd-441d-bd7e-c80b4c10321f" />
+
+Тоесть благодаря контексту мы создали идемпотентность.
