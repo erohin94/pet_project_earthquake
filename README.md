@@ -26,7 +26,7 @@
   
 - [Описание полей из API](https://earthquake.usgs.gov/data/comcat/index.php)
   
-- [Настрйока и последовательность шагов](https://github.com/erohin94/pet_project_earthquake/blob/main/step.md)
+- [Настройка и последовательность шагов](https://github.com/erohin94/pet_project_earthquake/blob/main/step.md)
 
 ### Архитектура
 
