@@ -19,3 +19,15 @@
 — построение витрин данных,
 
 — использование Git для управления версионностью и структуры проекта.
+
+# Ссылки
+
+- [Описание работы API](https://earthquake.usgs.gov/fdsnws/event/1/#methods)
+- 
+- [Описание полей из API](https://earthquake.usgs.gov/data/comcat/index.php)
+- 
+- [Настрйока и последовательность шагов](https://github.com/erohin94/pet_project_earthquake/blob/main/step.md)
+
+# Архитектура
+
+Добавить схему
