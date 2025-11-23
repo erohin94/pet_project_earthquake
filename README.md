@@ -20,7 +20,7 @@
 
 — использование Git для управления версионностью и структуры проекта.
 
-# Ссылки
+### Ссылки
 
 - [Описание работы API](https://earthquake.usgs.gov/fdsnws/event/1/#methods)
 - 
@@ -28,6 +28,6 @@
 - 
 - [Настрйока и последовательность шагов](https://github.com/erohin94/pet_project_earthquake/blob/main/step.md)
 
-# Архитектура
+### Архитектура
 
 Добавить схему
