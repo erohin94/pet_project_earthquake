@@ -389,3 +389,5 @@ with DAG(
 <img width="1617" height="227" alt="image" src="https://github.com/user-attachments/assets/4788615e-64fd-441d-bd7e-c80b4c10321f" />
 
 Тоесть благодаря контексту мы создали идемпотентность.
+
+48-00
