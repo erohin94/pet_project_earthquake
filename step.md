@@ -185,9 +185,65 @@ Airflow сейчас работает в докере, у докера есть 
 Пишу код в `raw_from_api_to_s3.py`
 
 ```
-import logging
+def get_dates(**context) -> tuple[str, str]:
+    """"""
+    start_date = context["data_interval_start"].format("YYYY-MM-DD")
+    end_date = context["data_interval_end"].format("YYYY-MM-DD")
 
-import duckdb
+    return start_date, end_date
+```
+
+Функция `get_dates(**context)` принимает в себя атрибут в виде контекста. Контекст это основная концепция в Airflow, которая хранит в себе кучу разной информации. Это словарь со всей служебной информацией о текущем запуске DAG и задачи, автоматически передаваемый Airflow в каждую задачу.
+
+Примерно вот так выглядит context. Если бы напечатал его в `PythonOperator`:
+
+```
+def my_task(**context):
+    print(context)
+```
+
+То внутри было бы что-то типа:
+
+```
+{
+  'ds': '2025-11-23',
+  'ts': '2025-11-23T00:00:00+00:00',
+  'data_interval_start': DateTime(2025, 11, 22),
+  'data_interval_end': DateTime(2025, 11, 23),
+  'dag_run': <DagRun ...>,
+  'task': <Task ...>,
+  'run_id': 'scheduled__2025-11-23T00:00:00Z',
+  'ti': <TaskInstance>,
+  ...
+}
+```
+
+Это просто набор готовых значений, которые Airflow предоставляет.
+
+В данном даге использую функцию get_dates(**context) чтобы доставать инфу о текущем запуске даг, а именно дату начала запуска и дату конца запуска, которые использую в дальнейшем.
+
+Контекст рекомендуется использовать в 100% случаев, использование контекста необходимо для создания идемпотентности. Идемпотентность (idempotency) — это свойство операции, при котором повторный запуск даёт тот же результат, что и первый, и не приводит к дополнительным изменениям.
+
+Так же в скрипте использую команду `COPY TO`
+
+```
+COPY
+        (
+            SELECT
+                *
+            FROM
+                read_csv_auto('https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime={start_date}&endtime={end_date}') AS res
+        ) TO 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet';
+```
+
+Это довольно простая команда, от куда скопировал COPY и куда вставил TO, в данном случае беру данные из апи и вставляю в бакет S3
+
+Полностью код дага
+
+```
+import logging # Встроенный модуль Python для логирования
+
+import duckdb # Создаю In-Memory БД
 import pendulum # Для работы с датами
 from airflow import DAG
 from airflow.models import Variable
@@ -203,8 +259,9 @@ LAYER = "raw"
 SOURCE = "earthquake"
 
 # S3
-ACCESS_KEY = Variable.get("access_key")
-SECRET_KEY = Variable.get("secret_key")
+# Эта конструкция нужна, чтобы читать переменные, которые хранятся не в коде, а в Airflow UI / Airflow metadata DB.
+ACCESS_KEY = Variable.get("access_key") # Это то что я прописываю в Admin->Variables в UI Airflow.
+SECRET_KEY = Variable.get("secret_key") # Это то что я прописываю в Admin->Variables в UI Airflow
 
 LONG_DESCRIPTION = """
 # LONG DESCRIPTION
@@ -236,48 +293,27 @@ def get_and_transfer_api_data_to_s3(**context):
     logging.info(f"💻 Start load for dates: {start_date}/{end_date}")
     con = duckdb.connect()
 
-    #con.sql(
-        #f"""
-        #SET TIMEZONE='UTC';
-        #INSTALL httpfs;
-        #LOAD httpfs;
-        #SET s3_url_style = 'path';
-        #SET s3_endpoint = 'minio:9000';
-        #SET s3_access_key_id = '{ACCESS_KEY}'; 
-        #SET s3_secret_access_key = '{SECRET_KEY}';
-        #SET s3_use_ssl = FALSE;
-
-        #COPY
-        #(
-            #SELECT
-                #*
-            #FROM
-                #read_csv_auto('https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime={start_date}&endtime={end_date}') AS res
-        #) TO 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet';
-
-       #""",
-    #)
     con.sql(
-    f"""
-    SET TIMEZONE='UTC';
-    INSTALL httpfs;
-    LOAD httpfs;
+        f"""
+        SET TIMEZONE='UTC';
+        INSTALL httpfs;
+        LOAD httpfs;
+        SET s3_url_style = 'path';
+        SET s3_endpoint = 'minio:9000';
+        SET s3_access_key_id = '{ACCESS_KEY}';
+        SET s3_secret_access_key = '{SECRET_KEY}';
+        SET s3_use_ssl = FALSE;
 
-    SET s3_url_style='path';
-    SET s3_endpoint='minio:9000';
-    SET s3_access_key_id='{ACCESS_KEY}';
-    SET s3_secret_access_key='{SECRET_KEY}';
-    SET s3_use_ssl=FALSE;
+        COPY
+        (
+            SELECT
+                *
+            FROM
+                read_csv_auto('https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime={start_date}&endtime={end_date}') AS res
+        ) TO 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet';
 
-    COPY (
-        SELECT *
-        FROM read_csv_auto(
-            'https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime={start_date}&endtime={end_date}'
-        )
-    ) TO 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet'
-    (FORMAT PARQUET, COMPRESSION 'GZIP');
-    """
-)
+        """,)
+
     con.close()
     logging.info(f"✅ Download for date success: {start_date}")
 
