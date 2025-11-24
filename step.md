@@ -573,6 +573,17 @@ GROUP BY 1
 
 <img width="1892" height="708" alt="image" src="https://github.com/user-attachments/assets/6804aa3e-21be-40e7-bd60-cf9e3e24eb75" />
 
+Обновляю и вижу те же самые числа, потому что у нас идемпотентность.
+
+<img width="304" height="194" alt="image" src="https://github.com/user-attachments/assets/eb1069c8-5073-47aa-915f-8991017ac94b" />
+
+Так же можно посмотреть граф
+
+<img width="1906" height="677" alt="image" src="https://github.com/user-attachments/assets/fe6910b1-0c51-4baf-b2c3-e02f057675cb" />
+
+Очистив таску за какую то дату можно посмотреть как работает идемпотентность. Данные будут одинаковыми.
+
+1-05
 
 ## Ошибки
 
