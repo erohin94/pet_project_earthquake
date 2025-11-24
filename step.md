@@ -524,20 +524,7 @@ CREATE TABLE ods.fct_earthquake
 
 Делаю вставку `task_id="insert_into_target_table"`. Например если мы удалили 5 мая, то мы сразу его вставляем из временной таблицы и сразу удаляем временную таблицу `task_id="drop_stg_table_after"`
 
-Создаю tmp таблицу в слое stg
 
-Пример SQL запроса
-
-DDL dm.fct_count_day_earthquake:
-
-```
-CREATE TABLE dm.fct_count_day_earthquake AS 
-SELECT time::date AS date, count(*)
-FROM ods.fct_earthquake
-GROUP BY 1
-```
-
-Реализовал его в `fct_count_day_earthquake.py`
 
 Так же создаю еще один даг `fct_avg_day_earthquake.py`
 
@@ -551,6 +538,40 @@ SELECT time::date AS date, avg(mag::float)
 FROM ods.fct_earthquake
 GROUP BY 1 
 ```
+
+Перед запуском дагов надо создать коннект в UI Airflow -> Admin -> Connections
+
+<img width="1874" height="917" alt="image" src="https://github.com/user-attachments/assets/edc1b735-bf1d-4afa-84e1-179fc06883a7" />
+
+<img width="1872" height="455" alt="image" src="https://github.com/user-attachments/assets/ac5bc206-0295-48b1-bf01-74b924ffa9c9" />
+
+С этого момента имею подключение к постгре, которое могу использовать в нескольких дагах. Вариантов подключения есть много.
+
+Проваливаюсь в UI в `DAG: fct_count_day_earthquake` и запускаю. Может появится ошибка, так как не создана таблица.
+
+<img width="1884" height="686" alt="image" src="https://github.com/user-attachments/assets/6556f9da-6ec2-480c-9fb2-4a07a36726b4" />
+
+Для создания таблицы перехожу в дибивер и пишу.
+
+DDL dm.fct_count_day_earthquake:
+
+```
+CREATE TABLE dm.fct_count_day_earthquake AS 
+SELECT time::date AS date, count(*)
+FROM ods.fct_earthquake
+GROUP BY 1
+```
+После создания проверяю и вижу данные
+
+<img width="722" height="436" alt="image" src="https://github.com/user-attachments/assets/ef905f70-efde-415b-be0f-20eb2b4e0931" />
+
+Теперь очищаю таску с ошибкой
+
+<img width="1898" height="692" alt="image" src="https://github.com/user-attachments/assets/98b54f70-bdd8-4d8c-91b0-51e10d8ea9d4" />
+
+Вижу что отработало
+
+<img width="1892" height="708" alt="image" src="https://github.com/user-attachments/assets/6804aa3e-21be-40e7-bd60-cf9e3e24eb75" />
 
 
 ## Ошибки
