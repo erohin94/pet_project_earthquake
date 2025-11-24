@@ -544,6 +544,7 @@ DDL dm.fct_count_day_earthquake:
 CREATE TABLE dm.fct_count_day_earthquake AS 
 SELECT time::date AS date, count(*)
 FROM ods.fct_earthquake
+WHERE time::date = '2025-11-20'
 GROUP BY 1
 ```
 После создания проверяю и вижу данные
@@ -580,8 +581,12 @@ DDL dm.fct_avg_day_earthquake:
 CREATE TABLE dm.fct_avg_day_earthquake AS
 SELECT time::date AS date, avg(mag::float)
 FROM ods.fct_earthquake
+WHERE time::date = '2025-11-20'
 GROUP BY 1 
 ```
+Так же можно посмотреть зависимоть дагов
+
+<img width="1878" height="390" alt="image" src="https://github.com/user-attachments/assets/4fc46500-603c-4a47-854b-4b1150776ca6" />
 
 1-05
 
