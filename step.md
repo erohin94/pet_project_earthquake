@@ -146,6 +146,10 @@ cred.py
 
 Metabase: http://localhost:3000
 
+## Подключение к PostgreSQL
+
+<img width="980" height="809" alt="image" src="https://github.com/user-attachments/assets/2cbc983f-2be3-4507-96c6-145e7bd968b5" />
+
 ## Создание первого DAG
 
 Первый даг будет грузить сырые данные из API и складывать в S3 `raw_from_api_to_s3.py`
@@ -390,4 +394,94 @@ with DAG(
 
 Тоесть благодаря контексту мы создали идемпотентность.
 
-48-00
+## Создание второго DAG
+
+`raw_from_s3_to_pg.py`
+
+В данном даге будет использоваться концепция сенсора `ExternalTaskSensor` — это сенсор в Apache Airflow, который ожидает завершения задачи в другом DAG. Сенсор (Sensor) в Apache Airflow — это специальный тип оператора, который ожидает выполнения определенного условия перед продолжением выполнения DAG. По структуре второй даг похож на первый даг.
+
+Для начала создаю ключ `pg_password`. Перехожу в UI Airflow, Admin -> Variables
+
+<img width="777" height="465" alt="image" src="https://github.com/user-attachments/assets/ea50d9fa-c62e-466f-86c3-aa51b4c018fe" />
+
+Использую синтаксис DuckDB. Создаю `SECRET dwh_postgres`.
+
+Это функции DuckDB для работы с внешними источниками данных и управления секретами.
+
+SECRET позволяет безопасно хранить учетные данные для подключения к внешним системам:
+
+```
+CREATE SECRET dwh_postgres (
+            TYPE postgres,
+            HOST 'postgres_dwh',
+            PORT 5432,
+            DATABASE postgres,
+            USER 'postgres',
+            PASSWORD '{PASSWORD}'
+        );
+```
+
+Что делает: Создает именованный секрет dwh_postgres с параметрами подключения к PostgreSQL. Хранит чувствительные данные (пароли) в зашифрованном виде. Исключает необходимость хранения паролей в открытом виде в коде.
+
+Пароль забираю из UI Airflow с помощью `PASSWORD = Variable.get("pg_password")`
+
+ATTACH подключает внешнюю базу данных как схему в текущей сессии DuckDB: `ATTACH '' AS dwh_postgres_db (TYPE postgres, SECRET dwh_postgres);`
+
+Что делает: Подключается к PostgreSQL используя ранее созданный секрет `dwh_postgres`. Создает псевдоним `dwh_postgres_db` для удаленной БД. Позволяет работать с таблицами PostgreSQL как с локальными таблицами DuckDB.
+
+Т.е код в `con.sql(.....)` делает следующее: Настраивает подключение к MinIO (S3-совместимое хранилище). Создает секрет для PostgreSQL DWH. Подключает PostgreSQL как внешнюю БД под именем `dwh_postgres_db`. Вставляет данные из DuckDB в таблицу PostgreSQL.
+
+В UI Airflow -> Browse -> DAG Dependencies можно увидеть зависимость дагов.
+
+<img width="820" height="287" alt="image" src="https://github.com/user-attachments/assets/56246e17-4df7-4439-94c7-b68f76ae5040" />
+
+Тоесть даг `raw_from_s3_to_pg` зависит от дага `raw_from_api_to_s3` на основе сенсора `sensor_on_raw_layer`
+
+Так же перед запуском дага, необходимо создать модель данных с которой будем работать. Для этого открываю DBeaver.
+
+Создаем схемы:
+
+```
+CREATE SCHEMA stg;
+CREATE SCHEMA ods;
+CREATE SCHEMA dm;
+```
+
+<img width="256" height="147" alt="image" src="https://github.com/user-attachments/assets/7d1594a0-1b94-4e94-905e-34ba3dad072a" />
+
+Создаю таблицы:
+
+DDL ods.fct_earthquake:
+
+```
+DDL ods.fct_earthquake:
+
+CREATE TABLE ods.fct_earthquake
+(
+	time varchar,
+	latitude varchar,
+	longitude varchar,
+	depth varchar,
+	mag varchar,
+	mag_type varchar,
+	nst varchar,
+	gap varchar,
+	dmin varchar,
+	rms varchar,
+	net varchar,
+	id varchar,
+	updated varchar,
+	place varchar,
+	type varchar,
+	horizontal_error varchar,
+	depth_error varchar,
+	mag_error varchar,
+	mag_nst varchar,
+	status varchar,
+	location_source varchar,
+	mag_source varchar
+)
+```
+
+Чтобы не тратить время, все типы привел к Varchar (Лучше так не делать).
+
