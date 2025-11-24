@@ -498,7 +498,41 @@ CREATE TABLE ods.fct_earthquake
 
 Важное свойство сенсора в том что, если первый даг не отработал, то второй даг не начнет свою работу.
 
+Видим как все отработало.
 
+<img width="1857" height="612" alt="image" src="https://github.com/user-attachments/assets/88a32178-d16b-4d09-95f8-8be516c66bd2" />
+
+Проверяю, добавились ли данные в postgre. Вижу, что добавлены необходимые даты и следующее количество строк
+
+<img width="443" height="221" alt="image" src="https://github.com/user-attachments/assets/9cae81d1-f973-4449-93f3-484c5ac99ab2" />
+
+<img width="264" height="163" alt="image" src="https://github.com/user-attachments/assets/176677b2-64b1-42bd-be6f-5941bedfc0c0" />
+
+<img width="1894" height="368" alt="image" src="https://github.com/user-attachments/assets/570a7a3a-4911-41a4-8a97-b5780bb0c753" />
+
+## Собираю витрину - третий DAG
+
+
+57-30
+
+`fct_count_day_earthquake.py`
+
+Создаю tmp таблицу в слое stg
+
+Пример SQL запроса
+
+DDL dm.fct_count_day_earthquake:
+
+```
+CREATE TABLE dm.fct_count_day_earthquake AS 
+SELECT time::date AS date, count(*)
+FROM ods.fct_earthquake
+GROUP BY 1
+```
+
+Реализовал его в `fct_count_day_earthquake.py`
+
+В коде так же использую сенсор.
 
 ## Ошибки
 
