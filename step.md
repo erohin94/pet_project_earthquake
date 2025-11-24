@@ -485,3 +485,67 @@ CREATE TABLE ods.fct_earthquake
 
 Чтобы не тратить время, все типы привел к Varchar (Лучше так не делать).
 
+Запускаем даг `raw_from_s3_to_pg`. Как только начинает отрабатывать этот даг, он выполняет доп таску в виде сенсора.
+
+<img width="1895" height="532" alt="image" src="https://github.com/user-attachments/assets/210b9739-4e5b-41e4-be43-44e7ae8d4878" />
+
+Сенсор ждет состояние успеха для первого дага. Можно нажать External Dag и обратиться к тому дагу который сенсор смотрит.
+
+<img width="1876" height="739" alt="image" src="https://github.com/user-attachments/assets/d09634ab-a4e7-4009-824c-8113f57f4e4e" />
+
+Важное свойство сенсора в том что, если первый даг не отработал, то второй даг не начнет свою работу.
+
+
+
+## Ошибки
+
+Проблема с `ExternalTaskSensor` при ручном запуске DAG
+
+Описание
+
+В DAG используется `ExternalTaskSensor` для ожидания успешного выполнения другого DAG (`raw_from_api_to_s3`).
+
+При `scheduled run` (scheduled__YYYY-MM-DD...) сенсор отрабатывает корректно.
+
+При `manual run` (manual__YYYY-MM-DD...) сенсор висит в статусе `up_for_reschedule` и никогда не переходит в `success`, хотя целевой DAG уже завершён.
+
+<img width="1873" height="627" alt="image" src="https://github.com/user-attachments/assets/7b79c45d-e41c-4cb2-b4cc-cae330d450d3" />
+
+<img width="1866" height="671" alt="image" src="https://github.com/user-attachments/assets/37eb39b5-d3b9-48e7-9b88-d8eda671cb2c" />
+
+<img width="1882" height="737" alt="image" src="https://github.com/user-attachments/assets/6c0b508e-ad22-413a-b2ca-d727e57d20ae" />
+
+<img width="1892" height="705" alt="image" src="https://github.com/user-attachments/assets/48eab82d-f41d-4df6-8bce-f348123ce297" />
+
+В UI Airflow: Сенсор успешен для `scheduled run`:
+
+```
+Run ID: scheduled__2025-11-20T05:00:00+00:00
+Status: success
+```
+
+Сенсор зависает для `manual run`:
+
+```
+Run ID: manual__2025-11-24T12:37:08.894410+00:00
+Status: up_for_reschedule
+```
+
+Решение
+
+Для ручных запусков добавить параметр execution_date_fn в сенсор, чтобы он смотрел на уже завершённый run (например, предыдущий scheduled run):
+
+```
+from datetime import timedelta
+from airflow.sensors.external_task import ExternalTaskSensor
+
+sensor_on_raw_layer = ExternalTaskSensor(
+    task_id="sensor_on_raw_layer",
+    external_dag_id="raw_from_api_to_s3",
+    allowed_states=["success"],
+    mode="reschedule",
+    timeout=360000,
+    poke_interval=60,
+    execution_date_fn=lambda dt: dt - timedelta(days=1),  # смотрим на предыдущий run
+)
+```
