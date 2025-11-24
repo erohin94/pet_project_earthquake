@@ -524,21 +524,6 @@ CREATE TABLE ods.fct_earthquake
 
 Делаю вставку `task_id="insert_into_target_table"`. Например если мы удалили 5 мая, то мы сразу его вставляем из временной таблицы и сразу удаляем временную таблицу `task_id="drop_stg_table_after"`
 
-
-
-Так же создаю еще один даг `fct_avg_day_earthquake.py`
-
-Пример SQL запроса
-
-DDL dm.fct_avg_day_earthquake:
-
-```
-CREATE TABLE dm.fct_avg_day_earthquake AS
-SELECT time::date AS date, avg(mag::float)
-FROM ods.fct_earthquake
-GROUP BY 1 
-```
-
 Перед запуском дагов надо создать коннект в UI Airflow -> Admin -> Connections
 
 <img width="1874" height="917" alt="image" src="https://github.com/user-attachments/assets/edc1b735-bf1d-4afa-84e1-179fc06883a7" />
@@ -582,6 +567,21 @@ GROUP BY 1
 <img width="1906" height="677" alt="image" src="https://github.com/user-attachments/assets/fe6910b1-0c51-4baf-b2c3-e02f057675cb" />
 
 Очистив таску за какую то дату можно посмотреть как работает идемпотентность. Данные будут одинаковыми.
+
+<img width="1869" height="680" alt="image" src="https://github.com/user-attachments/assets/ad3ac7da-8195-4c8d-86c2-2d8728c613a9" />
+
+Так же создаю еще один даг `fct_avg_day_earthquake.py`
+
+Пример SQL запроса для создания таблицы
+
+DDL dm.fct_avg_day_earthquake:
+
+```
+CREATE TABLE dm.fct_avg_day_earthquake AS
+SELECT time::date AS date, avg(mag::float)
+FROM ods.fct_earthquake
+GROUP BY 1 
+```
 
 1-05
 
