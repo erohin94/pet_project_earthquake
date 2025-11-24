@@ -277,7 +277,7 @@ SHORT_DESCRIPTION = "SHORT DESCRIPTION"
 
 args = {
     "owner": OWNER,
-    "start_date": pendulum.datetime(2025, 11, 12, tz="Europe/Moscow"),
+    "start_date": pendulum.datetime(2025, 11, 20, tz="Europe/Moscow"),
     "catchup": True,
     "retries": 3,
     "retry_delay": pendulum.duration(hours=1),
@@ -370,27 +370,30 @@ with DAG(
 
 Если кликнем на таску то увидим логи и то что загрузка завершена
 
-<img width="1892" height="442" alt="image" src="https://github.com/user-attachments/assets/ba8b0e08-a67a-4036-a4a6-51fb3f1a0e7a" />
+<img width="1876" height="587" alt="image" src="https://github.com/user-attachments/assets/df41e43b-8766-48d8-a767-6e5fb63e2073" />
 
 Так же увидим в MINIO
 
-<img width="1895" height="749" alt="image" src="https://github.com/user-attachments/assets/da8a18da-41c5-452e-b212-2e0ea378b80b" />
+<img width="1889" height="447" alt="image" src="https://github.com/user-attachments/assets/d4a39c58-8e7c-4cb9-9b7c-8404b9eb2b68" />
 
-<img width="1625" height="236" alt="image" src="https://github.com/user-attachments/assets/6d887122-9d50-4dec-aa94-e68afe3e74cf" />
+<img width="1866" height="393" alt="image" src="https://github.com/user-attachments/assets/4849f7fb-eefd-4f74-b11f-694a2a1eacf8" />
 
 Загрузка инкриментально за вчера. И все происходит идемпотентно.
 
 То есть если очистим таск
 
-<img width="1886" height="465" alt="image" src="https://github.com/user-attachments/assets/0e841650-e301-4ee8-aa21-1d952f7b92a3" />
+<img width="1883" height="587" alt="image" src="https://github.com/user-attachments/assets/0ecbc965-a1bf-4d9c-a7d9-2356f3ae2cfa" />
+
+<img width="1892" height="601" alt="image" src="https://github.com/user-attachments/assets/19c81c39-6f1b-46ba-a816-7b4c9060db73" />
 
 То он перетрет данные и опять загрузит тоже самое что и было за эту дату.
 
-И если посмотреть на данные за 12-11-2025 то они будут свежее (Last Modified) чем за 22-11-2025
+И если посмотреть на данные за 20-11-2025 то они будут свежее (Last Modified) чем за 23-11-2025
 
-<img width="1618" height="225" alt="image" src="https://github.com/user-attachments/assets/07e95b4b-f9e3-43ae-9d71-807165d5bfae" />
+<img width="1640" height="239" alt="image" src="https://github.com/user-attachments/assets/ec4aa90c-aaa7-4cf3-9ba6-d4359261b15a" />
 
-<img width="1617" height="227" alt="image" src="https://github.com/user-attachments/assets/4788615e-64fd-441d-bd7e-c80b4c10321f" />
+<img width="1613" height="252" alt="image" src="https://github.com/user-attachments/assets/8b3e1d4d-9885-4617-b5ad-63609b344c6e" />
+
 
 Тоесть благодаря контексту мы создали идемпотентность.
 
