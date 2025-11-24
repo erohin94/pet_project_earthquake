@@ -533,3 +533,23 @@ Status: success
 Run ID: manual__2025-11-24T12:37:08.894410+00:00
 Status: up_for_reschedule
 ```
+
+Решение:
+
+Сделал не ручной запуск DAG
+
+<img width="1878" height="362" alt="image" src="https://github.com/user-attachments/assets/674160eb-47b4-4ffa-a1a6-49d670630db2" />
+
+А провалился в сам даг в UI Airflow и он запустился от туда.
+
+<img width="1881" height="599" alt="image" src="https://github.com/user-attachments/assets/5481dc96-26e6-4212-90ad-39d1f46eedd3" />
+
+В результате получил 4 запуска как надо. с необходимыми датами. Запуск делал 24.11.2025. Даг собрал данные за 
+
+```
+scheduled__2025-11-20T02:00:00+00:00
+scheduled__2025-11-21T02:00:00+00:00
+scheduled__2025-11-22T02:00:00+00:00
+scheduled__2025-11-23T02:00:00+00:00
+```
+Это пойдет в сенсор.
