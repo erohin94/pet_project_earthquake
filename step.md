@@ -499,7 +499,7 @@ CREATE TABLE ods.fct_earthquake
 
 ## Ошибки
 
-Проблема с `ExternalTaskSensor` при ручном запуске DAG. По расписанию DAG должен запускаться в 05:00 UTC. Соответственно если запускаю в ручную до появляется еще один ручной запуск.
+Проблема с `ExternalTaskSensor` при ручном запуске DAG. По расписанию DAG должен запускаться в 05:00 UTC. Соответственно если запускаю в ручную то появляется еще один ручной запуск.
 
 Описание
 
@@ -529,23 +529,4 @@ Status: success
 ```
 Run ID: manual__2025-11-24T12:37:08.894410+00:00
 Status: up_for_reschedule
-```
-
-Решение
-
-Для ручных запусков добавить параметр execution_date_fn в сенсор, чтобы он смотрел на уже завершённый run (например, предыдущий scheduled run):
-
-```
-from datetime import timedelta
-from airflow.sensors.external_task import ExternalTaskSensor
-
-sensor_on_raw_layer = ExternalTaskSensor(
-    task_id="sensor_on_raw_layer",
-    external_dag_id="raw_from_api_to_s3",
-    allowed_states=["success"],
-    mode="reschedule",
-    timeout=360000,
-    poke_interval=60,
-    execution_date_fn=lambda dt: dt - timedelta(days=1),  # смотрим на предыдущий run
-)
 ```
