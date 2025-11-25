@@ -588,7 +588,7 @@ GROUP BY 1
 
 <img width="1878" height="390" alt="image" src="https://github.com/user-attachments/assets/4fc46500-603c-4a47-854b-4b1150776ca6" />
 
-1-05
+1-11-30
 
 ## Ошибки
 
