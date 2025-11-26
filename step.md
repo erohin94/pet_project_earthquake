@@ -588,7 +588,56 @@ GROUP BY 1
 
 <img width="1878" height="390" alt="image" src="https://github.com/user-attachments/assets/4fc46500-603c-4a47-854b-4b1150776ca6" />
 
-1-11-30
+## Metabase
+
+Перехожу по адресу `http://localhost:3000/setup`
+
+Регистрируюсь. Пароль `testtest1`
+
+<img width="717" height="779" alt="image" src="https://github.com/user-attachments/assets/f4737d72-ae2c-4a8f-9233-610eac7d3acb" />
+
+Сразу подключаю БД
+
+<img width="581" height="877" alt="image" src="https://github.com/user-attachments/assets/d7cec840-84ed-42f7-beb5-b91d2943856e" />
+
+Создаю новый дашборд
+
+<img width="1771" height="708" alt="image" src="https://github.com/user-attachments/assets/fc59e075-9402-4ff4-a2b0-ee679504ea34" />
+
+<img width="554" height="258" alt="image" src="https://github.com/user-attachments/assets/897bc7b4-ee28-499e-8ee5-d455b85ce1e3" />
+
+<img width="403" height="329" alt="image" src="https://github.com/user-attachments/assets/f62eccc0-d3d7-4f94-8566-dfcc77bf9aa4" />
+
+<img width="1012" height="495" alt="image" src="https://github.com/user-attachments/assets/a57fb9bf-72d1-4645-8f7d-b12e0f6ece51" />
+
+<img width="1917" height="569" alt="image" src="https://github.com/user-attachments/assets/0009964b-3f84-4392-b5a3-d864ec0e5d6c" />
+
+<img width="637" height="500" alt="image" src="https://github.com/user-attachments/assets/3769f3af-2862-4624-a8dc-c544bb069af7" />
+
+<img width="1902" height="949" alt="image" src="https://github.com/user-attachments/assets/60f8f545-f012-486e-8819-0db616aa2cbb" />
+
+<img width="1920" height="914" alt="image" src="https://github.com/user-attachments/assets/24863162-0e49-4da0-ac20-e237ad360278" />
+
+<img width="1525" height="732" alt="image" src="https://github.com/user-attachments/assets/d73b1b4b-6853-40b9-a1d4-6a53cbdf3d12" />
+
+<img width="1901" height="518" alt="image" src="https://github.com/user-attachments/assets/25188f50-db81-478b-a3ed-f45a7bd677fc" />
+
+Далее так же нажимаю Новый - Модель - Используйте собственный запрос. И создаю модель на основе таблицы: `dm.fct_count_day_earthquake`.
+
+Дублирую графики и меняю запрос.
+
+<img width="1853" height="727" alt="image" src="https://github.com/user-attachments/assets/2909ca9a-ca7d-4a2d-b5cd-009baa434c24" />
+
+Нажимаю 
+
+<img width="1327" height="394" alt="image" src="https://github.com/user-attachments/assets/06303533-e9a2-4b52-aabf-63489d855598" />
+
+<img width="1894" height="650" alt="image" src="https://github.com/user-attachments/assets/9b92184b-28bd-41df-86f9-aab2558e8c84" />
+
+Сохраняю как новый запрос
+
+<img width="674" height="593" alt="image" src="https://github.com/user-attachments/assets/1c61ce19-3f55-44b3-8836-a29398a7b87c" />
+
 
 ## Ошибки
 
@@ -596,7 +645,7 @@ GROUP BY 1
 
 Описание
 
-В DAG используется `ExternalTaskSensor` для ожидания успешного выполнения другого DAG (`raw_from_api_to_s3`).
+В DAG используется `ExternalTaskSensor` для ожидания успешного выполнения другого DAG (`raw_from_api_to_s3`). Сохраняю.
 
 При `scheduled run` (scheduled__YYYY-MM-DD...) сенсор отрабатывает корректно.
 
