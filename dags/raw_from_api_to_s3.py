@@ -1,6 +1,6 @@
-import logging
+import logging # Встроенный модуль Python для логирования
 
-import duckdb
+import duckdb # Создаю In-Memory БД
 import pendulum # Для работы с датами
 from airflow import DAG
 from airflow.models import Variable
@@ -16,8 +16,9 @@ LAYER = "raw"
 SOURCE = "earthquake"
 
 # S3
-ACCESS_KEY = Variable.get("access_key") # Это я прописываю в Admin->Variables в UI Airflow 
-SECRET_KEY = Variable.get("secret_key") # Это я прописываю в Admin->Variables в UI Airflow
+# Эта конструкция нужна, чтобы читать переменные, которые хранятся не в коде, а в Airflow UI / Airflow metadata DB.
+ACCESS_KEY = Variable.get("access_key") # Это то что я прописываю в Admin->Variables в UI Airflow.
+SECRET_KEY = Variable.get("secret_key") # Это то что я прописываю в Admin->Variables в UI Airflow
 
 LONG_DESCRIPTION = """
 # LONG DESCRIPTION
@@ -27,7 +28,7 @@ SHORT_DESCRIPTION = "SHORT DESCRIPTION"
 
 args = {
     "owner": OWNER,
-    "start_date": pendulum.datetime(2025, 11, 12, tz="Europe/Moscow"),
+    "start_date": pendulum.datetime(2025, 11, 20, tz="Europe/Moscow"),
     "catchup": True,
     "retries": 3,
     "retry_delay": pendulum.duration(hours=1),
