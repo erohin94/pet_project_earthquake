@@ -638,6 +638,9 @@ GROUP BY 1
 
 <img width="674" height="593" alt="image" src="https://github.com/user-attachments/assets/1c61ce19-3f55-44b3-8836-a29398a7b87c" />
 
+Получаю дашборд
+
+<img width="1875" height="845" alt="image" src="https://github.com/user-attachments/assets/146c49e1-2be6-4c5b-84c5-fdb234590d9c" />
 
 ## Ошибки
 
