@@ -642,6 +642,14 @@ GROUP BY 1
 
 <img width="1875" height="845" alt="image" src="https://github.com/user-attachments/assets/146c49e1-2be6-4c5b-84c5-fdb234590d9c" />
 
+
+## Итог
+
+Итоговая структура проекта
+
+<img width="678" height="430" alt="image" src="https://github.com/user-attachments/assets/4740b586-53f2-46bf-88d7-a5c09853ba7d" />
+
+
 ## Ошибки
 
 Проблема с `ExternalTaskSensor` при ручном запуске DAG. По расписанию DAG должен запускаться в 05:00 UTC. Соответственно если запускаю в ручную то появляется еще один ручной запуск.
