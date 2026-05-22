@@ -76,7 +76,7 @@ git config user.name
 
 ## Разворачивание инфраструктуры
 
-В services в .yaml файле были добавлены сервисы postgres_dwh, minio, metabase
+Был скачан оффициальный образ Airflow и в services в .yaml файле были добавлены сервисы postgres_dwh, minio, metabase
 
 Так же в переменную `_PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-duckdb}` был добавлен `duckdb`. Понадобится далее. Без него будет ошибка в UI Airflow.
 
